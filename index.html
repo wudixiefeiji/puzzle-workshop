@@ -32,7 +32,6 @@
   --toolbar-shadow: 0 -1px 20px rgba(0,0,0,0.06);
   --sheet-bg: #FFFFFF;
   --sheet-radius: 24px;
-  --pill-radius: 28px;
   --divider: rgba(60,60,67,0.12);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -62,6 +61,20 @@ body {
 
 /* ===== Home View ===== */
 #home-view { background: var(--bg); }
+.home-top-bar {
+  display: flex; justify-content: flex-end;
+  padding: 8px 16px;
+  flex-shrink: 0;
+}
+.home-top-btn {
+  width: 36px; height: 36px;
+  border: none; background: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 8px;
+  color: var(--text-secondary);
+}
+.home-top-btn:active { background: var(--divider); }
+.home-top-btn svg { width: 22px; height: 22px; }
 .home-content {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -78,9 +91,7 @@ body {
   margin-bottom: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }
-.app-icon span {
-  border-radius: 6px;
-}
+.app-icon span { border-radius: 6px; }
 .app-icon span:nth-child(1), .app-icon span:nth-child(4) { background: #FFFFFF; }
 .app-icon span:nth-child(2), .app-icon span:nth-child(3) { background: #8E8E93; }
 .app-title {
@@ -111,14 +122,10 @@ body {
   gap: 6px;
   white-space: nowrap;
   flex-shrink: 0;
-  -webkit-appearance: none;
-  appearance: none;
+  -webkit-appearance: none; appearance: none;
   transition: transform 0.15s, opacity 0.15s;
 }
-.primary-btn svg {
-  width: 20px; height: 20px;
-  flex-shrink: 0;
-}
+.primary-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 .primary-btn:active { transform: scale(0.97); opacity: 0.85; }
 .recent-section {
   width: 100%; max-width: 360px;
@@ -149,12 +156,13 @@ body {
 #editor-view { background: #F2F2F7; }
 .editor-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 0.5px solid var(--divider);
   flex-shrink: 0;
+  gap: 4px;
 }
 .header-btn {
   width: 36px; height: 36px;
@@ -162,12 +170,22 @@ body {
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; border-radius: 8px;
   color: var(--text-primary);
+  flex-shrink: 0;
 }
 .header-btn:active { background: var(--divider); }
 .header-btn svg { width: 22px; height: 22px; }
 .header-btn.blue svg { color: #007AFF; }
+.header-btn.active { background: var(--divider); }
 .header-title {
-  font-size: 17px; font-weight: 600;
+  font-size: 16px; font-weight: 600;
+  flex: 1; text-align: center;
+}
+.photo-count-badge {
+  font-size: 12px; font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(118,118,128,0.12);
+  padding: 2px 8px; border-radius: 10px;
+  flex-shrink: 0;
 }
 
 /* ===== Preview Area ===== */
@@ -229,6 +247,7 @@ body {
   pointer-events: none;
   -webkit-user-drag: none;
 }
+.photo-slot.fill-contain img { object-fit: contain; }
 .photo-slot.empty-slot {
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,0.03);
@@ -263,49 +282,91 @@ body {
   border: 3px solid #007AFF !important;
   transform: scale(0.96);
 }
-.dragging-clone {
-  box-shadow: 0 16px 48px rgba(0,0,0,0.25);
-}
+.dragging-clone { box-shadow: 0 16px 48px rgba(0,0,0,0.25); }
 
 /* ===== Controls Sheet ===== */
 .controls-sheet {
   background: var(--sheet-bg);
   border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
-  padding: 16px 16px 8px;
+  padding: 12px 16px calc(12px + var(--safe-bottom));
   box-shadow: 0 -2px 20px rgba(0,0,0,0.06);
   flex-shrink: 0;
 }
-.control-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-bottom: 14px;
-}
-.control-row:last-child { margin-bottom: 6px; }
 
-/* Layout Carousel */
-.carousel-btn {
-  width: 32px; height: 32px;
-  border: none; background: rgba(118,118,128,0.12);
-  border-radius: 8px;
+/* Layout Thumbnails */
+.layout-section { margin-bottom: 12px; }
+.section-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px; text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.layout-row {
+  display: flex; gap: 8px; overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.layout-row::-webkit-scrollbar { display: none; }
+.layout-thumb {
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  border: 2px solid var(--text-tertiary);
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--text-primary);
+  cursor: pointer; background: #FFF;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.layout-thumb:active { transform: scale(0.92); }
+.layout-thumb.active { border-color: var(--btn-primary); border-width: 2.5px; }
+.layout-thumb svg { width: 32px; height: 32px; }
+.layout-thumb-label {
+  font-size: 9px; font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center; margin-top: 2px;
+}
+
+/* Controls Row */
+.controls-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.controls-row:last-child { margin-bottom: 0; }
+
+/* Fill Mode Toggle */
+.fill-toggle {
+  display: flex;
+  background: rgba(118,118,128,0.12);
+  border-radius: 8px;
+  padding: 2px;
   flex-shrink: 0;
 }
-.carousel-btn:active { background: rgba(118,118,128,0.2); }
-.carousel-btn svg { width: 18px; height: 18px; }
-.layout-name {
-  font-size: 15px; font-weight: 600;
-  min-width: 60px; text-align: center;
+.fill-toggle-btn {
+  border: none; background: none;
+  padding: 4px 12px;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer; border-radius: 6px;
+  font-family: inherit;
 }
-.add-photo-btn {
-  width: 32px; height: 32px;
+.fill-toggle-btn.active {
+  background: #FFF;
+  color: var(--text-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.fill-toggle-btn:active { opacity: 0.7; }
+
+/* Add Photo Button */
+.add-photo-inline {
+  width: 36px; height: 36px;
   border: none; background: var(--btn-primary);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; color: #FFF;
-  flex-shrink: 0; margin-left: 4px;
+  flex-shrink: 0; margin-left: auto;
 }
-.add-photo-btn:active { opacity: 0.8; }
-.add-photo-btn svg { width: 18px; height: 18px; }
+.add-photo-inline:active { opacity: 0.8; }
+.add-photo-inline svg { width: 18px; height: 18px; }
 
 /* Aspect Ratios */
 .ratio-options {
@@ -314,7 +375,7 @@ body {
 }
 .ratio-btn {
   display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
+  align-items: center; gap: 3px;
   border: none; background: none;
   cursor: pointer; padding: 4px 6px;
   border-radius: 8px;
@@ -339,7 +400,7 @@ body {
   justify-content: center; width: 100%;
 }
 .color-swatch {
-  width: 30px; height: 30px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid transparent;
@@ -358,7 +419,7 @@ body {
 }
 .slider-group {
   flex: 1; display: flex; flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 .slider-group label {
   font-size: 11px; color: var(--text-secondary);
@@ -366,7 +427,7 @@ body {
 }
 .slider-group input[type=range] {
   -webkit-appearance: none; appearance: none;
-  width: 100%; height: 28px;
+  width: 100%; height: 24px;
   background: transparent;
   cursor: pointer;
 }
@@ -376,53 +437,28 @@ body {
 }
 .slider-group input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   background: #FFF;
   border: 0.5px solid rgba(0,0,0,0.04);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  margin-top: -9px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  margin-top: -8px;
 }
 .slider-group input[type=range]::-moz-range-track {
   height: 4px; border-radius: 2px;
   background: rgba(118,118,128,0.2);
 }
 .slider-group input[type=range]::-moz-range-thumb {
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   background: #FFF;
   border: 0.5px solid rgba(0,0,0,0.04);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-/* ===== Bottom Toolbar ===== */
-.toolbar {
-  display: flex; align-items: center; justify-content: space-around;
-  padding: 8px 16px calc(8px + var(--safe-bottom));
-  background: var(--toolbar-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--toolbar-shadow);
-  flex-shrink: 0;
-}
-.toolbar-btn {
-  width: 40px; height: 40px;
-  border: none; background: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; border-radius: 10px;
-  color: var(--text-primary);
-}
-.toolbar-btn:active { background: var(--divider); }
-.toolbar-btn svg { width: 22px; height: 22px; }
-.toolbar-version {
-  font-size: 12px; font-weight: 500;
-  color: var(--text-secondary);
-  min-width: 60px; text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 /* ===== Toast ===== */
 .toast {
-  position: fixed; bottom: 100px; left: 50%;
+  position: fixed; bottom: calc(40px + var(--safe-bottom)); left: 50%;
   transform: translateX(-50%) translateY(20px);
   background: rgba(0,0,0,0.8);
   color: #FFF;
@@ -462,7 +498,7 @@ body {
 
 /* ===== iOS Prompt ===== */
 .ios-prompt {
-  position: fixed; bottom: calc(90px + var(--safe-bottom));
+  position: fixed; bottom: calc(40px + var(--safe-bottom));
   left: 16px; right: 16px;
   background: rgba(0,0,0,0.88);
   color: #FFF;
@@ -496,7 +532,7 @@ body {
   cursor: pointer; flex-shrink: 0;
 }
 
-/* ===== More Menu (Action Sheet) ===== */
+/* ===== Action Sheet ===== */
 .action-sheet-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
@@ -552,6 +588,9 @@ body {
 
 <!-- ===== Home View ===== -->
 <div id="home-view" class="view active">
+  <div class="home-top-bar">
+    <button class="home-top-btn" id="home-more-btn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+  </div>
   <div class="home-content">
     <div class="app-icon">
       <span></span><span></span><span></span><span></span>
@@ -568,20 +607,17 @@ body {
       <div class="recent-list" id="recent-list"></div>
     </div>
   </div>
-  <div class="toolbar">
-    <button class="toolbar-btn" data-action="home-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <button class="toolbar-btn" data-action="home-layers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></button>
-    <span class="toolbar-version">v1.0.0</span>
-    <button class="toolbar-btn" data-action="home-refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
-    <button class="toolbar-btn" data-action="home-more"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
-  </div>
 </div>
 
 <!-- ===== Editor View ===== -->
 <div id="editor-view" class="view">
   <div class="editor-header">
     <button class="header-btn" id="editor-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="header-btn" id="editor-undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 103-9.7L3 8"/></svg></button>
+    <button class="header-btn" id="editor-manage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
     <span class="header-title">编辑</span>
+    <span class="photo-count-badge" id="photo-count">0张</span>
+    <button class="header-btn" id="editor-more"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
     <button class="header-btn blue" id="export-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
   </div>
   <div class="preview-area" id="preview-area">
@@ -590,19 +626,28 @@ body {
     </div>
   </div>
   <div class="controls-sheet">
-    <div class="control-row">
-      <button class="carousel-btn" id="layout-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <span class="layout-name" id="layout-name">上下</span>
-      <button class="carousel-btn" id="layout-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
-      <button class="add-photo-btn" id="add-photo-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <!-- Layout Thumbnails -->
+    <div class="layout-section">
+      <div class="section-label">
+        <span>布局</span>
+        <button class="add-photo-inline" id="add-photo-btn" title="添加照片"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div class="layout-row" id="layout-row"></div>
     </div>
-    <div class="control-row">
+    <!-- Fill Mode + Ratios -->
+    <div class="controls-row">
       <div class="ratio-options" id="ratio-options"></div>
+      <div class="fill-toggle">
+        <button class="fill-toggle-btn active" data-fill="cover">填充</button>
+        <button class="fill-toggle-btn" data-fill="contain">完整</button>
+      </div>
     </div>
-    <div class="control-row">
+    <!-- Colors -->
+    <div class="controls-row">
       <div class="color-palette" id="color-palette"></div>
     </div>
-    <div class="control-row sliders-row">
+    <!-- Sliders -->
+    <div class="controls-row sliders-row">
       <div class="slider-group">
         <label>间距</label>
         <input type="range" id="spacing-slider" min="0" max="40" value="8">
@@ -617,18 +662,11 @@ body {
       </div>
     </div>
   </div>
-  <div class="toolbar">
-    <button class="toolbar-btn" data-action="editor-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <button class="toolbar-btn" data-action="editor-manage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></button>
-    <span class="toolbar-version">v1.0.0</span>
-    <button class="toolbar-btn" data-action="editor-undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 103-9.7L3 8"/></svg></button>
-    <button class="toolbar-btn" data-action="editor-more"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
-  </div>
 </div>
 
 <!-- ===== Hidden File Inputs ===== -->
-<input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none">
-<input type="file" id="replace-input" accept="image/*,video/*" style="display:none">
+<input type="file" id="file-input" multiple accept="image/*,image/heic,image/heif,video/*,video/quicktime" style="display:none">
+<input type="file" id="replace-input" accept="image/*,image/heic,image/heif,video/*,video/quicktime" style="display:none">
 
 <!-- ===== Toast ===== -->
 <div class="toast" id="toast"></div>
@@ -670,6 +708,15 @@ const LAYOUTS = [
   { id: 'grid2x3',    name: '2×3',  type: 'grid', cols: 2, rows: 3 },
 ];
 
+const LAYOUT_ICONS = {
+  vertical: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/></svg>',
+  horizontal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="18" rx="1.5"/><rect x="13" y="3" width="8" height="18" rx="1.5"/></svg>',
+  grid2x2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>',
+  grid1x3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="5.3" height="18" rx="1.5"/><rect x="9.3" y="3" width="5.3" height="18" rx="1.5"/><rect x="15.6" y="3" width="5.3" height="18" rx="1.5"/></svg>',
+  grid3x1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="5.3" rx="1.5"/><rect x="3" y="9.3" width="18" height="5.3" rx="1.5"/><rect x="3" y="15.6" width="18" height="5.3" rx="1.5"/></svg>',
+  grid2x3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="5.3" rx="1"/><rect x="13" y="3" width="8" height="5.3" rx="1"/><rect x="3" y="9.3" width="8" height="5.3" rx="1"/><rect x="13" y="9.3" width="8" height="5.3" rx="1"/><rect x="3" y="15.6" width="8" height="5.3" rx="1"/><rect x="13" y="15.6" width="8" height="5.3" rx="1"/></svg>',
+};
+
 const ASPECT_RATIOS = [
   { id: '1:1',  w: 1,  h: 1,  shape: { w: 22, h: 22 } },
   { id: '4:3',  w: 4,  h: 3,  shape: { w: 26, h: 20 } },
@@ -696,6 +743,7 @@ const state = {
   spacing: 8,
   margin: 12,
   cornerRadius: 0,
+  fillMode: 'cover',
   manageMode: false,
   history: [],
 };
@@ -745,6 +793,7 @@ function saveSnapshot() {
     spacing: state.spacing,
     margin: state.margin,
     cornerRadius: state.cornerRadius,
+    fillMode: state.fillMode,
   })));
   if (state.history.length > 30) state.history.shift();
 }
@@ -756,6 +805,40 @@ function undo() {
   syncControls();
   renderPreview();
   showToast('已撤销');
+}
+
+function updatePhotoCount() {
+  const count = state.photos.length;
+  $('photo-count').textContent = count + '张';
+}
+
+/* ===== Auto-Save Drafts ===== */
+function saveDraft() {
+  try {
+    const draft = {
+      photos: state.photos.map(p => ({
+        id: p.id, imageUrl: p.imageUrl, isLive: p.isLive, name: p.name,
+        width: p.width, height: p.height
+      })),
+      layoutIndex: state.layoutIndex,
+      aspectRatio: state.aspectRatio,
+      bgColor: state.bgColor,
+      spacing: state.spacing,
+      margin: state.margin,
+      cornerRadius: state.cornerRadius,
+      fillMode: state.fillMode,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('puzzle-draft', JSON.stringify(draft));
+  } catch(e) { /* localStorage full or unavailable */ }
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem('puzzle-draft');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
 }
 
 /* ===== PWA Setup ===== */
@@ -803,30 +886,70 @@ function showView(name) {
 
 /* ===== File Handling ===== */
 function isVideoFile(file) {
-  return file.type.startsWith('video/') || /\.mov$/i.test(file.name);
+  return file.type.startsWith('video/') || /\.(mov|mp4|m4v)$/i.test(file.name);
 }
 
 function isImageFile(file) {
-  return file.type.startsWith('image/') || /\.(heic|heif)$/i.test(file.name);
+  return file.type.startsWith('image/') || /\.(heic|heif|jpg|jpeg|png|gif|webp)$/i.test(file.name);
 }
 
 function processImageFile(file) {
   return new Promise((resolve, reject) => {
+    // Handle HEIC/HEIF - try to convert via canvas
+    const isHEIC = /\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif';
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        resolve({
-          id: nextId(),
-          imageUrl: e.target.result,
-          videoUrl: null,
-          isLive: false,
-          name: file.name,
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-        });
+        // For large images, downscale to max 4096px to avoid memory issues
+        const maxDim = 4096;
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (w > maxDim || h > maxDim) {
+          const scale = maxDim / Math.max(w, h);
+          w = Math.round(w * scale);
+          h = Math.round(h * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/png');
+          resolve({
+            id: nextId(),
+            imageUrl: dataUrl,
+            videoUrl: null,
+            isLive: false,
+            name: file.name,
+            width: w, height: h,
+          });
+        } else {
+          resolve({
+            id: nextId(),
+            imageUrl: e.target.result,
+            videoUrl: null,
+            isLive: false,
+            name: file.name,
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+          });
+        }
       };
-      img.onerror = () => reject(new Error('图片加载失败: ' + file.name));
+      img.onerror = () => {
+        // If image fails to load (might be HEIC not supported), try creating a placeholder
+        if (isHEIC) {
+          resolve({
+            id: nextId(),
+            imageUrl: '',
+            videoUrl: null,
+            isLive: false,
+            name: file.name,
+            width: 1080, height: 1080,
+            needsConversion: true,
+          });
+        } else {
+          reject(new Error('图片加载失败: ' + file.name));
+        }
+      };
       img.src = e.target.result;
     };
     reader.onerror = () => reject(new Error('文件读取失败'));
@@ -847,7 +970,6 @@ function processVideoFile(file) {
     const timeout = setTimeout(() => {
       if (!resolved) {
         resolved = true;
-        // Fallback: use a placeholder image
         resolve({
           id: nextId(),
           imageUrl: '',
@@ -858,7 +980,7 @@ function processVideoFile(file) {
           height: 1920,
         });
       }
-    }, 8000);
+    }, 10000);
 
     video.addEventListener('loadeddata', () => {
       try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); } catch(e) {}
@@ -874,7 +996,7 @@ function processVideoFile(file) {
         canvas.height = video.videoHeight || 1920;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0);
-        const imageUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const imageUrl = canvas.toDataURL('image/jpeg', 0.95);
         resolve({
           id: nextId(),
           imageUrl: imageUrl,
@@ -940,29 +1062,24 @@ async function handleFiles(files) {
     state.photos.push(...results);
   }
 
-  // Cap at MAX_PHOTOS
   if (state.photos.length > MAX_PHOTOS) {
     state.photos = state.photos.slice(0, MAX_PHOTOS);
     showToast(`最多支持 ${MAX_PHOTOS} 张照片`);
   }
 
-  // Auto-select a suitable layout
   autoSelectLayout();
   syncControls();
   renderPreview();
+  updatePhotoCount();
+  saveDraft();
 }
 
 function autoSelectLayout() {
   const count = state.photos.length;
-  if (count <= 2) {
-    state.layoutIndex = 0; // vertical
-  } else if (count === 3) {
-    state.layoutIndex = 3; // 1x3
-  } else if (count === 4) {
-    state.layoutIndex = 2; // 2x2
-  } else if (count === 6) {
-    state.layoutIndex = 5; // 2x3
-  }
+  if (count <= 2) state.layoutIndex = 0;
+  else if (count === 3) state.layoutIndex = 3;
+  else if (count === 4) state.layoutIndex = 2;
+  else if (count === 6) state.layoutIndex = 5;
 }
 
 /* ===== Layout & Rendering ===== */
@@ -971,9 +1088,7 @@ function getCurrentLayout() { return LAYOUTS[state.layoutIndex]; }
 function getSlotCount() {
   const layout = getCurrentLayout();
   const photoCount = state.photos.length;
-  if (layout.type === 'flex') {
-    return Math.max(2, photoCount);
-  }
+  if (layout.type === 'flex') return Math.max(2, photoCount);
   return layout.cols * layout.rows;
 }
 
@@ -982,11 +1097,9 @@ function renderPreview() {
   const layout = getCurrentLayout();
   const slotCount = getSlotCount();
 
-  // Set layout class
   previewContent.className = 'preview-content layout-' + layout.id;
   if (state.manageMode) previewContent.classList.add('manage-mode');
 
-  // Apply styles
   previewContent.style.background = state.bgColor;
   previewContent.style.gap = state.spacing + 'px';
   previewContent.style.padding = state.margin + 'px';
@@ -1005,6 +1118,7 @@ function createPhotoSlot(photo, index) {
   slot.className = 'photo-slot';
   slot.dataset.index = index;
   slot.style.borderRadius = state.cornerRadius + 'px';
+  if (state.fillMode === 'contain') slot.classList.add('fill-contain');
 
   if (photo && photo.imageUrl) {
     const img = document.createElement('img');
@@ -1020,7 +1134,6 @@ function createPhotoSlot(photo, index) {
       slot.appendChild(badge);
     }
   } else if (photo && !photo.imageUrl && photo.isLive) {
-    // Video with no captured frame
     const placeholder = document.createElement('div');
     placeholder.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1C1C1E;color:#8E8E93;font-size:12px;';
     placeholder.textContent = '点击播放';
@@ -1031,7 +1144,6 @@ function createPhotoSlot(photo, index) {
     badge.textContent = 'LIVE';
     slot.appendChild(badge);
   } else {
-    // Empty slot
     slot.classList.add('empty-slot');
     const plus = document.createElement('div');
     plus.className = 'empty-plus';
@@ -1039,7 +1151,6 @@ function createPhotoSlot(photo, index) {
     slot.appendChild(plus);
   }
 
-  // Delete button (manage mode)
   if (photo) {
     const delBtn = document.createElement('button');
     delBtn.className = 'delete-btn';
@@ -1049,6 +1160,8 @@ function createPhotoSlot(photo, index) {
       saveSnapshot();
       state.photos.splice(index, 1);
       renderPreview();
+      updatePhotoCount();
+      saveDraft();
       vibrate(10);
     });
     slot.appendChild(delBtn);
@@ -1079,16 +1192,37 @@ function updatePreviewSize() {
 }
 
 /* ===== Controls ===== */
-function cycleLayout(direction) {
+function selectLayout(index) {
   saveSnapshot();
-  state.layoutIndex = (state.layoutIndex + direction + LAYOUTS.length) % LAYOUTS.length;
-  syncLayoutName();
+  state.layoutIndex = index;
+  syncControls();
   renderPreview();
   vibrate(8);
 }
 
-function syncLayoutName() {
-  $('layout-name').textContent = getCurrentLayout().name;
+function buildLayoutThumbnails() {
+  const container = $('layout-row');
+  container.innerHTML = '';
+  LAYOUTS.forEach((layout, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;';
+    const thumb = document.createElement('div');
+    thumb.className = 'layout-thumb' + (i === state.layoutIndex ? ' active' : '');
+    thumb.innerHTML = LAYOUT_ICONS[layout.id];
+    thumb.addEventListener('click', () => selectLayout(i));
+    const label = document.createElement('div');
+    label.className = 'layout-thumb-label';
+    label.textContent = layout.name;
+    wrapper.appendChild(thumb);
+    wrapper.appendChild(label);
+    container.appendChild(wrapper);
+  });
+}
+
+function syncLayoutThumbs() {
+  document.querySelectorAll('.layout-thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === state.layoutIndex);
+  });
 }
 
 function setAspectRatio(ratioId) {
@@ -1096,6 +1230,7 @@ function setAspectRatio(ratioId) {
   state.aspectRatio = ratioId;
   syncControls();
   renderPreview();
+  saveDraft();
 }
 
 function setBgColor(color) {
@@ -1103,19 +1238,28 @@ function setBgColor(color) {
   state.bgColor = color;
   syncControls();
   renderPreview();
+  saveDraft();
+}
+
+function setFillMode(mode) {
+  saveSnapshot();
+  state.fillMode = mode;
+  syncControls();
+  renderPreview();
+  saveDraft();
 }
 
 function syncControls() {
-  syncLayoutName();
-  // Aspect ratio buttons
+  syncLayoutThumbs();
   document.querySelectorAll('.ratio-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.ratio === state.aspectRatio);
   });
-  // Color swatches
   document.querySelectorAll('.color-swatch').forEach(sw => {
     sw.classList.toggle('active', sw.dataset.color === state.bgColor);
   });
-  // Sliders
+  document.querySelectorAll('.fill-toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.fill === state.fillMode);
+  });
   $('spacing-slider').value = state.spacing;
   $('margin-slider').value = state.margin;
   $('radius-slider').value = state.cornerRadius;
@@ -1128,10 +1272,7 @@ function buildRatioButtons() {
     const btn = document.createElement('button');
     btn.className = 'ratio-btn';
     btn.dataset.ratio = ratio.id;
-    btn.innerHTML = `
-      <div class="ratio-shape" style="width:${ratio.shape.w}px;height:${ratio.shape.h}px;"></div>
-      <div class="ratio-label">${ratio.id}</div>
-    `;
+    btn.innerHTML = `<div class="ratio-shape" style="width:${ratio.shape.w}px;height:${ratio.shape.h}px;"></div><div class="ratio-label">${ratio.id}</div>`;
     btn.addEventListener('click', () => setAspectRatio(ratio.id));
     container.appendChild(btn);
   });
@@ -1172,7 +1313,6 @@ function onPointerDown(e) {
   ptr.isLongPress = false;
   ptr.targetIndex = -1;
 
-  // Long press for Live Photo
   const photo = state.photos[ptr.index];
   ptr.longPressTimer = setTimeout(() => {
     if (!ptr.isDragging && photo && photo.isLive) {
@@ -1184,7 +1324,6 @@ function onPointerDown(e) {
 
 function onPointerMove(e) {
   if (ptr.index < 0) return;
-
   const dx = e.clientX - ptr.startX;
   const dy = e.clientY - ptr.startY;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1196,7 +1335,6 @@ function onPointerMove(e) {
   }
 
   if (ptr.isLongPress && dist > 12) {
-    // Convert long press to drag
     stopLivePhoto();
     ptr.isLongPress = false;
     ptr.isDragging = true;
@@ -1217,11 +1355,8 @@ function onPointerUp(e) {
   } else if (ptr.isDragging) {
     finishDrag();
   } else if (ptr.index >= 0) {
-    // Tap
     const duration = Date.now() - ptr.startTime;
-    if (duration < 500) {
-      handleTap(ptr.index);
-    }
+    if (duration < 500) handleTap(ptr.index);
   }
 
   ptr.index = -1;
@@ -1231,12 +1366,7 @@ function onPointerUp(e) {
 
 function handleTap(index) {
   const photo = state.photos[index];
-  if (!photo) {
-    // Empty slot — add photo
-    fileInput.click();
-    return;
-  }
-  // Replace photo
+  if (!photo) { fileInput.click(); return; }
   replaceTargetIndex = index;
   replaceInput.click();
 }
@@ -1272,7 +1402,6 @@ function updateDrag(e) {
   ptr.clone.style.left = (e.clientX - ptr.offsetX) + 'px';
   ptr.clone.style.top = (e.clientY - ptr.offsetY) + 'px';
 
-  // Find target slot
   const slots = previewContent.querySelectorAll('.photo-slot');
   let found = -1;
   slots.forEach((s, i) => {
@@ -1302,11 +1431,12 @@ function finishDrag() {
     state.photos[ptr.index] = state.photos[ptr.targetIndex];
     state.photos[ptr.targetIndex] = temp;
     renderPreview();
+    saveDraft();
     vibrate(15);
   }
 }
 
-/* ===== Live Photo ===== */
+/* ===== Live Photo Playback ===== */
 function playLivePhoto(index) {
   const photo = state.photos[index];
   if (!photo || !photo.isLive || !photo.videoUrl) return;
@@ -1341,7 +1471,7 @@ function stopLivePhoto() {
   }
 }
 
-/* ===== Export ===== */
+/* ===== Export: Static PNG ===== */
 function calculateSlotPositions(layout, slotCount, canvasW, canvasH, spacing, margin) {
   const positions = [];
   const innerW = canvasW - margin * 2;
@@ -1361,7 +1491,7 @@ function calculateSlotPositions(layout, slotCount, canvasW, canvasH, spacing, ma
       break;
     }
     case 'grid2x2': case 'grid2x3': {
-      const cols = layout === 'grid2x2' ? 2 : 2;
+      const cols = 2;
       const rows = layout === 'grid2x2' ? 2 : 3;
       const sw = (innerW - spacing * (cols - 1)) / cols;
       const sh = (innerH - spacing * (rows - 1)) / rows;
@@ -1405,6 +1535,23 @@ function drawImageCover(ctx, img, x, y, w, h) {
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
 }
 
+function drawImageContain(ctx, img, x, y, w, h) {
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+  if (!iw || !ih) return;
+  const imgRatio = iw / ih;
+  const slotRatio = w / h;
+  let dw, dh, dx, dy;
+  if (imgRatio > slotRatio) {
+    dw = w; dh = w / imgRatio;
+    dx = x; dy = y + (h - dh) / 2;
+  } else {
+    dh = h; dw = h * imgRatio;
+    dx = x + (w - dw) / 2; dy = y;
+  }
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
 function roundRectPath(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
@@ -1420,10 +1567,27 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-async function exportCollage(format = 'png') {
+async function loadAllImages(photos, positions) {
+  const images = [];
+  for (let i = 0; i < positions.length && i < photos.length; i++) {
+    const photo = photos[i];
+    if (!photo || !photo.imageUrl) { images.push(null); continue; }
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = photo.imageUrl;
+    }).catch(() => { images.push(null); return; });
+    if (img.naturalWidth) images.push(img);
+    else images.push(null);
+  }
+  return images;
+}
+
+async function exportPNG() {
   if (state.photos.length === 0) { showToast('请先添加照片'); return; }
 
-  showLoading('正在导出...');
+  showLoading('正在导出高清图片...');
 
   try {
     const ratio = ASPECT_RATIOS.find(r => r.id === state.aspectRatio);
@@ -1437,7 +1601,6 @@ async function exportCollage(format = 'png') {
       canvasW = Math.round(baseSize * ratio.w / ratio.h);
     }
 
-    // Scale spacing/margin/radius proportionally
     const scale = canvasW / (previewWrapper.clientWidth || 360);
     const spacing = Math.round(state.spacing * scale);
     const margin = Math.round(state.margin * scale);
@@ -1452,44 +1615,33 @@ async function exportCollage(format = 'png') {
     canvas.height = canvasH;
     const ctx = canvas.getContext('2d');
 
-    // Background
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, canvasW, canvasH);
 
-    // Draw photos
-    for (let i = 0; i < positions.length && i < state.photos.length; i++) {
-      const photo = state.photos[i];
-      if (!photo || !photo.imageUrl) continue;
+    const images = await loadAllImages(state.photos, positions);
 
-      const img = new Image();
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = photo.imageUrl;
-      }).catch(() => { /* skip failed image */ });
-
-      if (!img.naturalWidth) continue;
-
+    for (let i = 0; i < positions.length && i < images.length; i++) {
+      const img = images[i];
+      if (!img) continue;
       const pos = positions[i];
       ctx.save();
       if (radius > 0) {
         roundRectPath(ctx, pos.x, pos.y, pos.w, pos.h, radius);
         ctx.clip();
       }
-      drawImageCover(ctx, img, pos.x, pos.y, pos.w, pos.h);
+      if (state.fillMode === 'contain') {
+        drawImageContain(ctx, img, pos.x, pos.y, pos.w, pos.h);
+      } else {
+        drawImageCover(ctx, img, pos.x, pos.y, pos.w, pos.h);
+      }
       ctx.restore();
     }
 
-    const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
-    const quality = format === 'jpeg' ? 0.95 : undefined;
-
     canvas.toBlob(async (blob) => {
       if (!blob) { hideLoading(); showToast('导出失败'); return; }
+      const filename = `拼图工坊_${Date.now()}.png`;
+      const file = new File([blob], filename, { type: 'image/png' });
 
-      const filename = `拼图工坊_${Date.now()}.${format}`;
-      const file = new File([blob], filename, { type: mimeType });
-
-      // Try Web Share API (best for iOS — saves to Photos)
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({ files: [file], title: '拼图工坊' });
@@ -1499,7 +1651,7 @@ async function exportCollage(format = 'png') {
           if (err.name !== 'AbortError') {
             downloadBlob(blob, filename);
             hideLoading();
-            showToast('已保存到下载文件夹');
+            showToast('已保存');
           } else {
             hideLoading();
           }
@@ -1509,11 +1661,154 @@ async function exportCollage(format = 'png') {
         hideLoading();
         showToast('已保存');
       }
-    }, mimeType, quality);
+    }, 'image/png');
   } catch(err) {
     console.error(err);
     hideLoading();
     showToast('导出失败，请重试');
+  }
+}
+
+/* ===== Export: Video (for Live Photos) ===== */
+async function exportVideo() {
+  const hasLive = state.photos.some(p => p.isLive && p.videoUrl);
+  if (!hasLive) { showToast('没有实况照片可导出'); return; }
+
+  showLoading('正在导出视频...');
+
+  try {
+    const ratio = ASPECT_RATIOS.find(r => r.id === state.aspectRatio);
+    const baseSize = 1080;
+    let canvasW, canvasH;
+    if (ratio.w >= ratio.h) {
+      canvasW = baseSize;
+      canvasH = Math.round(baseSize * ratio.h / ratio.w);
+    } else {
+      canvasH = baseSize;
+      canvasW = Math.round(baseSize * ratio.w / ratio.h);
+    }
+
+    const scale = canvasW / (previewWrapper.clientWidth || 360);
+    const spacing = Math.round(state.spacing * scale);
+    const margin = Math.round(state.margin * scale);
+    const radius = Math.round(state.cornerRadius * scale);
+
+    const layout = getCurrentLayout().id;
+    const slotCount = getSlotCount();
+    const positions = calculateSlotPositions(layout, slotCount, canvasW, canvasH, spacing, margin);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    const ctx = canvas.getContext('2d');
+
+    // Load all static images
+    const staticImages = await loadAllImages(state.photos, positions);
+
+    // Load all live videos
+    const liveVideos = [];
+    for (let i = 0; i < positions.length && i < state.photos.length; i++) {
+      const photo = state.photos[i];
+      if (photo && photo.isLive && photo.videoUrl) {
+        const video = document.createElement('video');
+        video.src = photo.videoUrl;
+        video.muted = true;
+        video.playsInline = true;
+        video.loop = true;
+        await new Promise((resolve) => {
+          video.addEventListener('loadeddata', resolve, { once: true });
+          video.addEventListener('error', resolve, { once: true });
+          setTimeout(resolve, 5000);
+        });
+        try { video.play(); } catch(e) {}
+        liveVideos.push({ index: i, video });
+      }
+    }
+
+    // Use MediaRecorder to capture canvas
+    const stream = canvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+    const chunks = [];
+
+    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = async () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const filename = `拼图工坊_视频_${Date.now()}.webm`;
+      const file = new File([blob], filename, { type: 'video/webm' });
+
+      liveVideos.forEach(v => { try { v.video.pause(); } catch(e){} });
+
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: '拼图工坊视频' });
+          hideLoading();
+          showToast('视频导出成功');
+        } catch(err) {
+          if (err.name !== 'AbortError') {
+            downloadBlob(blob, filename);
+            hideLoading();
+            showToast('视频已保存');
+          } else {
+            hideLoading();
+          }
+        }
+      } else {
+        downloadBlob(blob, filename);
+        hideLoading();
+        showToast('视频已保存');
+      }
+    };
+
+    recorder.start();
+
+    // Animate for 3 seconds
+    const duration = 3000;
+    const startTime = Date.now();
+
+    function drawFrame() {
+      const elapsed = Date.now() - startTime;
+      if (elapsed >= duration) {
+        recorder.stop();
+        return;
+      }
+
+      // Background
+      ctx.fillStyle = state.bgColor;
+      ctx.fillRect(0, 0, canvasW, canvasH);
+
+      // Draw each slot
+      for (let i = 0; i < positions.length; i++) {
+        const pos = positions[i];
+        const photo = state.photos[i];
+        ctx.save();
+        if (radius > 0) {
+          roundRectPath(ctx, pos.x, pos.y, pos.w, pos.h, radius);
+          ctx.clip();
+        }
+
+        const liveEntry = liveVideos.find(v => v.index === i);
+        if (liveEntry && liveEntry.video.readyState >= 2) {
+          // Draw current video frame
+          ctx.drawImage(liveEntry.video, pos.x, pos.y, pos.w, pos.h);
+        } else if (staticImages[i]) {
+          if (state.fillMode === 'contain') {
+            drawImageContain(ctx, staticImages[i], pos.x, pos.y, pos.w, pos.h);
+          } else {
+            drawImageCover(ctx, staticImages[i], pos.x, pos.y, pos.w, pos.h);
+          }
+        }
+
+        ctx.restore();
+      }
+
+      requestAnimationFrame(drawFrame);
+    }
+
+    drawFrame();
+  } catch(err) {
+    console.error(err);
+    hideLoading();
+    showToast('视频导出失败');
   }
 }
 
@@ -1564,6 +1859,19 @@ $('new-collage-btn').addEventListener('click', () => {
   fileInput.click();
 });
 
+$('home-more-btn').addEventListener('click', () => {
+  showActionSheet('拼图工坊', [
+    { label: '添加到主屏幕', className: ' primary', onClick: () => {
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        showToast('请点击 Safari 分享按钮，选择"添加到主屏幕"');
+      } else {
+        showToast('请使用浏览器菜单"添加到主屏幕"');
+      }
+    }},
+    { label: '关于拼图工坊', onClick: () => showToast('拼图工坊 v2.0.0 · 把你的照片拼成艺术') },
+  ]);
+});
+
 // File inputs
 fileInput.addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
@@ -1580,18 +1888,46 @@ replaceInput.addEventListener('change', (e) => {
   e.target.value = '';
 });
 
-// Editor header
-$('editor-back').addEventListener('click', () => showView('home'));
-$('export-btn').addEventListener('click', () => {
-  showActionSheet('导出', [
-    { label: '导出 PNG（无损）', className: ' primary', onClick: () => exportCollage('png') },
-    { label: '导出 JPEG（更小）', className: ' primary', onClick: () => exportCollage('jpeg') },
-  ]);
+// Editor header buttons
+$('editor-back').addEventListener('click', () => {
+  saveDraft();
+  showView('home');
+});
+$('editor-undo').addEventListener('click', () => undo());
+$('editor-manage').addEventListener('click', () => {
+  state.manageMode = !state.manageMode;
+  $('editor-manage').classList.toggle('active', state.manageMode);
+  renderPreview();
+  showToast(state.manageMode ? '管理模式：点 × 删除照片' : '已退出管理模式');
+});
+$('editor-more').addEventListener('click', () => {
+  const hasLive = state.photos.some(p => p.isLive && p.videoUrl);
+  const items = [
+    { label: '导出实况视频', className: ' primary', onClick: () => exportVideo() },
+    { label: '添加到主屏幕', onClick: () => {
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        showToast('请点击 Safari 分享按钮，选择"添加到主屏幕"');
+      } else {
+        showToast('请使用浏览器菜单"添加到主屏幕"');
+      }
+    }},
+    { label: '清空所有照片', className: ' destructive', onClick: () => {
+      saveSnapshot();
+      state.photos = [];
+      renderPreview();
+      updatePhotoCount();
+      saveDraft();
+      showToast('已清空');
+    }},
+  ];
+  if (!hasLive) items[0].label = '导出实况视频（需要实况照片）';
+  showActionSheet('更多', items);
 });
 
-// Layout carousel
-$('layout-prev').addEventListener('click', () => cycleLayout(-1));
-$('layout-next').addEventListener('click', () => cycleLayout(1));
+// Export - direct PNG, no format selection
+$('export-btn').addEventListener('click', () => exportPNG());
+
+// Add photo button
 $('add-photo-btn').addEventListener('click', () => {
   if (state.photos.length >= MAX_PHOTOS) {
     showToast(`最多支持 ${MAX_PHOTOS} 张照片`);
@@ -1600,18 +1936,23 @@ $('add-photo-btn').addEventListener('click', () => {
   fileInput.click();
 });
 
+// Fill mode toggle
+document.querySelectorAll('.fill-toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => setFillMode(btn.dataset.fill));
+});
+
 // Sliders
 $('spacing-slider').addEventListener('input', (e) => {
   state.spacing = parseInt(e.target.value);
   previewContent.style.gap = state.spacing + 'px';
 });
-$('spacing-slider').addEventListener('change', () => { saveSnapshot(); });
+$('spacing-slider').addEventListener('change', () => { saveSnapshot(); saveDraft(); });
 
 $('margin-slider').addEventListener('input', (e) => {
   state.margin = parseInt(e.target.value);
   previewContent.style.padding = state.margin + 'px';
 });
-$('margin-slider').addEventListener('change', () => { saveSnapshot(); });
+$('margin-slider').addEventListener('change', () => { saveSnapshot(); saveDraft(); });
 
 $('radius-slider').addEventListener('input', (e) => {
   state.cornerRadius = parseInt(e.target.value);
@@ -1619,63 +1960,13 @@ $('radius-slider').addEventListener('input', (e) => {
     s.style.borderRadius = state.cornerRadius + 'px';
   });
 });
-$('radius-slider').addEventListener('change', () => { saveSnapshot(); });
+$('radius-slider').addEventListener('change', () => { saveSnapshot(); saveDraft(); });
 
 // Preview interactions
 previewContent.addEventListener('pointerdown', onPointerDown);
 previewContent.addEventListener('pointermove', onPointerMove);
 previewContent.addEventListener('pointerup', onPointerUp);
 previewContent.addEventListener('pointercancel', onPointerUp);
-
-// Toolbar buttons
-document.querySelectorAll('.toolbar-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const action = btn.dataset.action;
-    switch(action) {
-      case 'home-back': window.scrollTo(0, 0); break;
-      case 'home-layers': showToast('暂无历史项目'); break;
-      case 'home-refresh': window.location.reload(); break;
-      case 'home-more':
-        showActionSheet('拼图工坊', [
-          { label: '添加到主屏幕', className: ' primary', onClick: () => {
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-              showToast('请点击 Safari 分享按钮，选择"添加到主屏幕"');
-            } else {
-              showToast('请使用浏览器菜单"添加到主屏幕"');
-            }
-          }},
-          { label: '关于拼图工坊', onClick: () => showToast('拼图工坊 v1.0.0') },
-        ]);
-        break;
-      case 'editor-back': showView('home'); break;
-      case 'editor-manage':
-        state.manageMode = !state.manageMode;
-        renderPreview();
-        showToast(state.manageMode ? '管理模式：点击 × 删除照片' : '已退出管理模式');
-        break;
-      case 'editor-undo': undo(); break;
-      case 'editor-more':
-        showActionSheet('更多', [
-          { label: '导出 PNG', className: ' primary', onClick: () => exportCollage('png') },
-          { label: '导出 JPEG', className: ' primary', onClick: () => exportCollage('jpeg') },
-          { label: '添加到主屏幕', onClick: () => {
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-              showToast('请点击 Safari 分享按钮，选择"添加到主屏幕"');
-            } else {
-              showToast('请使用浏览器菜单"添加到主屏幕"');
-            }
-          }},
-          { label: '清空所有照片', className: ' destructive', onClick: () => {
-            saveSnapshot();
-            state.photos = [];
-            renderPreview();
-            showToast('已清空');
-          }},
-        ]);
-        break;
-    }
-  });
-});
 
 // Resize
 window.addEventListener('resize', () => updatePreviewSize());
@@ -1693,10 +1984,41 @@ document.addEventListener('touchend', (e) => {
 }, { passive: false });
 
 /* ===== Init ===== */
+buildLayoutThumbnails();
 buildRatioButtons();
 buildColorPalette();
 syncControls();
+updatePhotoCount();
 checkIOSPrompt();
+
+// Load draft on startup
+const draft = loadDraft();
+if (draft && draft.photos && draft.photos.length > 0) {
+  // Show recent section
+  const recentSection = $('recent-section');
+  const recentList = $('recent-list');
+  recentSection.style.display = 'block';
+  const item = document.createElement('div');
+  item.className = 'recent-item';
+  const img = document.createElement('img');
+  img.src = draft.photos[0].imageUrl || '';
+  item.appendChild(img);
+  item.addEventListener('click', () => {
+    state.photos = draft.photos;
+    state.layoutIndex = draft.layoutIndex || 0;
+    state.aspectRatio = draft.aspectRatio || '3:4';
+    state.bgColor = draft.bgColor || '#FFFFFF';
+    state.spacing = draft.spacing ?? 8;
+    state.margin = draft.margin ?? 12;
+    state.cornerRadius = draft.cornerRadius ?? 0;
+    state.fillMode = draft.fillMode || 'cover';
+    syncControls();
+    renderPreview();
+    updatePhotoCount();
+    showView('editor');
+  });
+  recentList.appendChild(item);
+}
 </script>
 </body>
 </html>

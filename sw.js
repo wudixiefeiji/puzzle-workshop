@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3.0.1';
+const CACHE_VERSION = 'v3.0.2';
 const CACHE_NAME = 'puzzle-workshop-' + CACHE_VERSION;
 const ASSETS = [
   './',
